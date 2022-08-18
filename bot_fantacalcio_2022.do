@@ -2,7 +2,7 @@
  clear all
  set more off
  
- global path [insert your path]
+ global path  [insert your path]
  
  import excel "$path/Quotazioni_Fantacalcio_Stagione_2022_23.xlsx", sheet("Tutti") firstrow clear
  
@@ -28,8 +28,8 @@ replace valore = `i' if quotazione == "`i'"
  
  * Players' selection based on mkt value
  drop if valore <= 4 & role == "P"
- drop if valore <= 6 & role == "D"
- drop if valore <= 7 & role == "C"
+ drop if valore <= 5 & role == "D"
+ drop if valore <= 6 & role == "C"
  drop if valore <= 8 & role == "A"  
 
  sort role valore
@@ -61,14 +61,14 @@ replace valore = `i' if quotazione == "`i'"
  gen     temp= . 
  replace temp= random*3.5*valore if role == "A"
  replace temp= random*1.2*valore if role == "C"
- replace temp= random*valore/2   if role == "D"  
- replace temp= random*valore/4   if role == "P"   
+ replace temp= random*valore     if role == "D"  
+ replace temp= random*valore/2   if role == "P"   
  *This automatically sort attaccanti, centro, dif, port
  sort role random
  gen n=_n
  
  * Attaccanti
- foreach count of numlist 1(1)6 {
+ foreach count of numlist 1(1)25 {
  replace prezzo=prezzo+temp if n==`count' & temp<tot_soldi
  replace prezzo=tot_soldi 	if n==`count' & temp>=tot_soldi
  replace prezzo=int(prezzo)
@@ -77,8 +77,15 @@ replace valore = `i' if quotazione == "`i'"
  replace tot_soldi=tot_soldi-xx+1
  drop x xx 
  }
-
-* Altri
+ 
+ egen tot = sum(prezzo)
+ 
+ /*
+ He always spend 299, and keep 1M for christmas
+ keep id role nome squadra prezzo
+ */
+ 
+ /* Altri
  foreach count of numlist 7(1)25 {
  replace prezzo=prezzo+temp if n==`count' & temp<tot_soldi
  replace prezzo=tot_soldi 	if n==`count' & temp>=tot_soldi
@@ -88,10 +95,4 @@ replace valore = `i' if quotazione == "`i'"
  replace tot_soldi=tot_soldi-xx+1
  drop x xx 
  } 
-
- 
- egen tot = sum(prezzo)
- /*
- He always spend 299, and keep 1M for christmas
- keep id role nome squadra prezzo
  */
