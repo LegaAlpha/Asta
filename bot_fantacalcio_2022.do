@@ -2,7 +2,7 @@
  clear all
  set more off
  
- global path /Users/aledinal/Dropbox/Mac/Downloads
+ global path [insert your path]
  
  import excel "$path/Quotazioni_Fantacalcio_Stagione_2022_23.xlsx", sheet("Tutti") firstrow clear
  
